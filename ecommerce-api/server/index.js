@@ -18,11 +18,13 @@ app.use(express.json());
 const categoryRoutes = require('./routes/categories');
 const subcategoryRoutes = require('./routes/subcategories');
 const productRoutes = require('./routes/products');
+const authRoutes = require('./routes/auth');
 
 // Use routes
 app.use('/api/categories', categoryRoutes);
 app.use('/api/subcategories', subcategoryRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/auth', authRoutes);
 
 // Root route
 app.get('/', (req, res) => {

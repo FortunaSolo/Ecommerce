@@ -7,6 +7,7 @@ const productSchema = new mongoose.Schema({
   category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
   subcategory: { type: mongoose.Schema.Types.ObjectId, ref: 'Subcategory', required: true },
   image: { type: String, required: true },  // To store the image URL
+  user: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
   description: { type: String },  // For product description
   stock: { type: Number},  // For stock
 }, { timestamps: true });
