@@ -47,8 +47,27 @@ const getProductById = async (req, res) => {
   }
 };
 
+// Fetch all products created by the logged-in user
+const getMyProducts = async (req, res) => {
+  try {
+    const products = await Product.find({ user: req.user.id })
+      .populate("category", "name")
+      .populate("subcategory", "name");
+
+      res.status(200).json(products);
+      console.log("User from request:", req.user);
+
+    } catch (error) {
+      console.error("Error fetching user's products:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+};
+
+
 // Create a new product
 const createProduct = async (req, res) => {
+  console.log("Incoming product data:", req.body);
+  console.log("Uploaded file:", req.file);
   const { name, price, categoryId, subcategoryId, phoneNumber, description } = req.body;
 
   // Image URL will be stored here
@@ -95,49 +114,49 @@ const createProduct = async (req, res) => {
 };
 
 // Update a product by ID
+const fs = require("fs"); // Add this for file system operations
+
 const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = {};
 
-    if (req.file) {
-      updateData.image = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
-    }
-    if (req.body.name) {
-      updateData.name = req.body.name;
-    }
-    if (req.body.price) {
-      updateData.price = req.body.price;
-    }
-    if (req.body.stock) {
-      updateData.stock = req.body.stock;
-    }
-    if (req.body.description) {  // Allow updating description
-      updateData.description = req.body.description;
-    }
-    if (req.body.category || req.body.subcategory) {
-      return res.status(400).json({ message: 'Category and Subcategory cannot be updated' });
-    }
-
-    // Check if the product belongs to the logged-in user
     const product = await Product.findById(id);
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ message: "Product not found" });
     }
     if (product.user.toString() !== req.user.id) {
-      return res.status(403).json({ message: 'Unauthorized to update this product' });
+      return res.status(403).json({ message: "Unauthorized to update this product" });
     }
 
-    // Update the product
-    const updateProduct = await Product.findByIdAndUpdate(id, updateData, { new: true }); 
-    res.json(updateProduct);
+    if (req.file) {
+      // Remove old image if a new one is uploaded
+      if (product.image) {
+        const oldImagePath = path.join(__dirname, "..", "..", "uploads", path.basename(product.image));
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath); // Delete old image file
+        }
+      }
+      updateData.image = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+    }
+
+    if (req.body.name) updateData.name = req.body.name;
+    if (req.body.price) updateData.price = req.body.price;
+    if (req.body.stock) updateData.stock = req.body.stock;
+    if (req.body.description) updateData.description = req.body.description;
+
+    if (req.body.category || req.body.subcategory) {
+      return res.status(400).json({ message: "Category and Subcategory cannot be updated" });
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(id, updateData, { new: true });
+    res.json(updatedProduct);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
 
-// Delete a product by ID
 // Delete a product by ID
 const deleteProduct = async (req, res) => {
   try {
@@ -170,6 +189,7 @@ const deleteProduct = async (req, res) => {
 module.exports = {
   getAllProducts, 
   getProductById,
+  getMyProducts,
   createProduct, 
   updateProduct, 
   deleteProduct,

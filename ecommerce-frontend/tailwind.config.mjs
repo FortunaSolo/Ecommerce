@@ -8,12 +8,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        'primary-dark': '#272757'   ,    // Darkest blue
-        'primary-light': '#505081',      // Medium blue
-        'primary-mid': '#8686ac',        // Dark blue
-        'accent':'#0f0e46' ,             // Light blue/purple
-        'text-light': '#fafafa',    //white text
-        'text-dark': '#282630',  //dark text
+        'primary-dark': '#272757',
+        'primary-light': '#505081',
+        'primary-mid': '#8686ac',
+        'accent': '#0f0e46',
+        'text-light': '#fafafa',
+        'text-dark': '#282630',
+
       },
     },
   },

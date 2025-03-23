@@ -1,3 +1,4 @@
+/* globals.css or tailwind.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,8 +10,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #c2c1c1;
+    --foreground: #1f1e1e;
   }
 }
 
@@ -18,4 +19,8 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.z-50 {
+  z-index: 50 !important;
 }
