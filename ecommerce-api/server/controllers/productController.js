@@ -8,14 +8,27 @@ const Subcategory = require('../models/Subcategory');
 // Fetch all products with their category and subcategory names
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find()
-      .populate('category', 'name')
-      .populate('subcategory', 'name');
+    const { category, subcategory } = req.query;
+    let filter = {};
+
+    if (category) {
+      filter.category = category; // ✅ Ensure it filters by category ID
+    }
+    if (subcategory) {
+      filter.subcategory = subcategory; // ✅ Ensure it filters by subcategory ID
+    }
+
+    const products = await Product.find(filter)
+      .populate("category", "name")
+      .populate("subcategory", "name");
+
     res.json(products);
   } catch (error) {
+    console.error("Error fetching products:", error);
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // Fetch a single product by ID with its category and subcategory names
 const getProductById = async (req, res) => {
@@ -43,7 +56,8 @@ const createProduct = async (req, res) => {
 
   if (req.file) {
     // If an image was uploaded, get its URL
-    imageUrl = path.join('uploads', req.file.filename); // You can store the relative path to the image
+    imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+ // You can store the relative path to the image
   }
 
   // Validate the provided categoryId and subcategoryId
@@ -87,7 +101,7 @@ const updateProduct = async (req, res) => {
     const updateData = {};
 
     if (req.file) {
-      updateData.image = req.file.path;
+      updateData.image = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
     }
     if (req.body.name) {
       updateData.name = req.body.name;

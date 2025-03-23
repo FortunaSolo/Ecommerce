@@ -1,10 +1,13 @@
-const Category = require('../models/Category');
+//server/controllers/categotyController.js
+const Category = require("../models/Category");
+const Subcategory = require("../models/Subcategory");
 
 const getAllCategories = async (req, res) => {
   try {
-    const categories = await Category.find();
+    const categories = await Category.find().populate("subcategories"); // ✅ Fixed population
     res.json(categories);
   } catch (error) {
+    console.error("Error fetching categories:", error);
     res.status(500).json({ message: error.message });
   }
 };

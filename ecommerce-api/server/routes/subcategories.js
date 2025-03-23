@@ -1,3 +1,4 @@
+//server/routes/subcategories.js
 const express = require('express');
 const router = express.Router();
 const { getAllSubcategories, createSubcategory } = require('../controllers/subcategoryController');
