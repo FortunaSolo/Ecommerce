@@ -1,3 +1,4 @@
+//ecommerce-frontend\src\utils\api.js
 const API_URL = "http://localhost:5000/api/auth"; // Change to your backend URL in production
 
 // Register User
